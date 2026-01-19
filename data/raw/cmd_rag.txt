@@ -1,0 +1,2 @@
+conda run -n rag_project python process_single_query.py --query "О чем говорится в файле jobless?"
+conda run -n rag_project pip install langchain-core langchain-community

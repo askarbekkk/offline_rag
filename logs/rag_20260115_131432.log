@@ -1,0 +1,15 @@
+2026-01-15 13:14:32,125 - root - INFO - Initializing components...
+2026-01-15 13:14:34,493 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: nomic-ai/nomic-embed-text-v1.5
+2026-01-15 13:14:42,582 - transformers_modules.nomic-ai.nomic-bert-2048.7710840340a098cfb869c4f65e87cf2b1b70caca.modeling_hf_nomic_bert - WARNING - <All keys matched successfully>
+2026-01-15 13:14:45,919 - src.models.reranker - INFO - Initialized reranker model: BAAI/bge-reranker-v2-m3
+2026-01-15 13:14:45,931 - root - INFO - Loading and preprocessing data...
+2026-01-15 13:14:45,932 - src.data.data_ingestion - INFO - Loading CSV data...
+2026-01-15 13:14:45,996 - src.data.data_ingestion - INFO - Loaded 2424 training samples and 1040 test samples
+2026-01-15 13:14:46,004 - src.data.data_ingestion - INFO - Found 2 documents for processing
+2026-01-15 13:14:46,020 - src.data.data_ingestion - INFO - Successfully processed and cached documents from D:/Secure-Offline-RAG-System/data/raw/data.txt
+2026-01-15 13:14:47,082 - docling.document_converter - INFO - Going to convert document batch...
+2026-01-15 13:17:33,830 - src.data.loaders.file_loader - ERROR - Error loading PDF D:\Secure-Offline-RAG-System\data\raw\jobless.pdf: [WinError 1314] Клиент не обладает требуемыми правами: '..\\..\\blobs\\7008c0269fece2af4ca4d79d116cf5a783178e58' -> 'C:\\Users\\askar\\.cache\\huggingface\\hub\\models--ds4sd--docling-models\\snapshots\\a8a57426c20d9f7bc0343cfd84e8b439425e5561\\README.md'
+2026-01-15 13:17:33,830 - src.data.loaders.file_loader - ERROR - Error loading D:/Secure-Offline-RAG-System/data/raw/jobless.pdf: [WinError 1314] Клиент не обладает требуемыми правами: '..\\..\\blobs\\7008c0269fece2af4ca4d79d116cf5a783178e58' -> 'C:\\Users\\askar\\.cache\\huggingface\\hub\\models--ds4sd--docling-models\\snapshots\\a8a57426c20d9f7bc0343cfd84e8b439425e5561\\README.md'
+2026-01-15 13:17:33,830 - src.data.data_ingestion - ERROR - Error processing D:/Secure-Offline-RAG-System/data/raw/jobless.pdf: [WinError 1314] Клиент не обладает требуемыми правами: '..\\..\\blobs\\7008c0269fece2af4ca4d79d116cf5a783178e58' -> 'C:\\Users\\askar\\.cache\\huggingface\\hub\\models--ds4sd--docling-models\\snapshots\\a8a57426c20d9f7bc0343cfd84e8b439425e5561\\README.md'
+2026-01-15 13:17:33,830 - root - ERROR - Error in RAG initialization: [WinError 1314] Клиент не обладает требуемыми правами: '..\\..\\blobs\\7008c0269fece2af4ca4d79d116cf5a783178e58' -> 'C:\\Users\\askar\\.cache\\huggingface\\hub\\models--ds4sd--docling-models\\snapshots\\a8a57426c20d9f7bc0343cfd84e8b439425e5561\\README.md'
+2026-01-15 13:17:33,830 - root - ERROR - Error in main execution: [WinError 1314] Клиент не обладает требуемыми правами: '..\\..\\blobs\\7008c0269fece2af4ca4d79d116cf5a783178e58' -> 'C:\\Users\\askar\\.cache\\huggingface\\hub\\models--ds4sd--docling-models\\snapshots\\a8a57426c20d9f7bc0343cfd84e8b439425e5561\\README.md'

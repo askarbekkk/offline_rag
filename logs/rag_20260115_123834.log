@@ -1,0 +1,9 @@
+2026-01-15 12:38:34,844 - root - INFO - Initializing components...
+2026-01-15 12:38:37,220 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: nomic-ai/nomic-embed-text-v1.5
+2026-01-15 12:38:44,477 - transformers_modules.nomic-ai.nomic-bert-2048.7710840340a098cfb869c4f65e87cf2b1b70caca.modeling_hf_nomic_bert - WARNING - <All keys matched successfully>
+2026-01-15 12:50:11,646 - src.models.reranker - INFO - Initialized reranker model: BAAI/bge-reranker-v2-m3
+2026-01-15 12:50:11,717 - root - INFO - Loading and preprocessing data...
+2026-01-15 12:50:11,720 - src.data.data_ingestion - INFO - Loading CSV data...
+2026-01-15 12:50:11,721 - src.data.data_ingestion - ERROR - Unexpected error loading data: 'train_data'
+2026-01-15 12:50:11,721 - root - ERROR - Error in RAG initialization: 'train_data'
+2026-01-15 12:50:11,722 - root - ERROR - Error in main execution: 'train_data'

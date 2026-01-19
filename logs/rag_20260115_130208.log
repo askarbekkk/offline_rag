@@ -1,0 +1,12 @@
+2026-01-15 13:02:08,610 - root - INFO - Initializing components...
+2026-01-15 13:02:10,016 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: nomic-ai/nomic-embed-text-v1.5
+2026-01-15 13:02:16,389 - transformers_modules.nomic-ai.nomic-bert-2048.7710840340a098cfb869c4f65e87cf2b1b70caca.modeling_hf_nomic_bert - WARNING - <All keys matched successfully>
+2026-01-15 13:02:19,684 - src.models.reranker - INFO - Initialized reranker model: BAAI/bge-reranker-v2-m3
+2026-01-15 13:02:19,701 - root - INFO - Loading and preprocessing data...
+2026-01-15 13:02:19,703 - src.data.data_ingestion - INFO - Loading CSV data...
+2026-01-15 13:02:19,776 - src.data.data_ingestion - INFO - Loaded 2424 training samples and 1040 test samples
+2026-01-15 13:02:19,777 - src.data.data_ingestion - INFO - Found 1 documents for processing
+2026-01-15 13:02:19,789 - src.data.loaders.file_loader - ERROR - Error loading D:/Secure-Offline-RAG-System/data/raw/data.txt: Error loading D:\Secure-Offline-RAG-System\data\raw\data.txt
+2026-01-15 13:02:19,790 - src.data.data_ingestion - ERROR - Error processing D:/Secure-Offline-RAG-System/data/raw/data.txt: Error loading D:\Secure-Offline-RAG-System\data\raw\data.txt
+2026-01-15 13:02:19,791 - root - ERROR - Error in RAG initialization: Error loading D:\Secure-Offline-RAG-System\data\raw\data.txt
+2026-01-15 13:02:19,792 - root - ERROR - Error in main execution: Error loading D:\Secure-Offline-RAG-System\data\raw\data.txt

@@ -1,0 +1,3 @@
+2026-01-15 12:08:04,855 - root - INFO - Initializing components...
+2026-01-15 12:08:04,857 - root - ERROR - Error in RAG initialization: [WinError 2] Не удается найти указанный файл
+2026-01-15 12:08:04,857 - root - ERROR - Error in main execution: [WinError 2] Не удается найти указанный файл

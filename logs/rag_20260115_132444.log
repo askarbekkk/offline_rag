@@ -1,0 +1,29 @@
+2026-01-15 13:24:44,439 - root - INFO - Initializing components...
+2026-01-15 13:24:47,628 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: nomic-ai/nomic-embed-text-v1.5
+2026-01-15 13:24:59,032 - transformers_modules.nomic-ai.nomic-bert-2048.7710840340a098cfb869c4f65e87cf2b1b70caca.modeling_hf_nomic_bert - WARNING - <All keys matched successfully>
+2026-01-15 13:25:04,839 - src.models.reranker - INFO - Initialized reranker model: BAAI/bge-reranker-v2-m3
+2026-01-15 13:25:04,866 - root - INFO - Loading and preprocessing data...
+2026-01-15 13:25:04,866 - src.data.data_ingestion - INFO - Loading CSV data...
+2026-01-15 13:25:04,968 - src.data.data_ingestion - INFO - Loaded 2424 training samples and 1040 test samples
+2026-01-15 13:25:04,970 - src.data.data_ingestion - INFO - Found 2 documents for processing
+2026-01-15 13:25:07,255 - docling.document_converter - INFO - Going to convert document batch...
+2026-01-15 13:28:10,886 - easyocr.easyocr - WARNING - Neither CUDA nor MPS are available - defaulting to CPU. Note: This module is much faster with a GPU.
+2026-01-15 13:28:10,926 - easyocr.easyocr - WARNING - Downloading detection model, please wait. This may take several minutes depending upon your network connection.
+2026-01-15 13:28:36,738 - easyocr.easyocr - INFO - Download complete
+2026-01-15 13:28:36,738 - easyocr.easyocr - WARNING - Downloading recognition model, please wait. This may take several minutes depending upon your network connection.
+2026-01-15 13:28:42,481 - easyocr.easyocr - INFO - Download complete.
+2026-01-15 13:28:49,751 - docling.pipeline.base_pipeline - INFO - Processing document jobless.pdf
+2026-01-15 13:55:30,421 - docling.document_converter - INFO - Finished converting document jobless.pdf in 1824.80 sec.
+2026-01-15 13:55:30,649 - src.data.data_ingestion - INFO - Successfully processed and cached documents from D:/Secure-Offline-RAG-System/data/raw/jobless.pdf
+2026-01-15 13:55:30,654 - src.data.data_ingestion - WARNING - Error loading existing results: 'train_output'
+2026-01-15 13:55:30,654 - root - INFO - Processing documents...
+2026-01-15 13:55:30,654 - src.data.data_preprocessing - INFO - Processing documents into chunks...
+2026-01-15 13:56:09,218 - src.data.data_preprocessing - INFO - Created 536 chunks from 2 documents
+2026-01-15 13:56:09,220 - root - INFO - Initializing retriever...
+2026-01-15 13:56:09,220 - src.retrieval.hybrid_retriever - INFO - Initializing BM25 index...
+2026-01-15 13:56:09,450 - src.retrieval.bm25_retriever - INFO - Created and cached new BM25 index
+2026-01-15 13:56:09,450 - src.retrieval.hybrid_retriever - INFO - Initializing vector store...
+2026-01-15 14:04:31,261 - faiss.loader - INFO - Loading faiss with AVX2 support.
+2026-01-15 14:04:31,407 - faiss.loader - INFO - Successfully loaded faiss with AVX2 support.
+2026-01-15 14:04:31,478 - src.retrieval.vector_retriever - INFO - Vector store created successfully
+2026-01-15 14:04:31,486 - src.retrieval.hybrid_retriever - INFO - Hybrid retriever initialization complete

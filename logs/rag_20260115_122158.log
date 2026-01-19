@@ -1,0 +1,5 @@
+2026-01-15 12:21:58,569 - root - INFO - Initializing components...
+2026-01-15 12:22:00,486 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: nomic-ai/nomic-embed-text-v1.5
+2026-01-15 12:22:06,728 - transformers_modules.nomic-ai.nomic-bert-2048.7710840340a098cfb869c4f65e87cf2b1b70caca.modeling_hf_nomic_bert - WARNING - <All keys matched successfully>
+2026-01-15 12:22:08,173 - root - ERROR - Error in RAG initialization: Torch not compiled with CUDA enabled
+2026-01-15 12:22:08,173 - root - ERROR - Error in main execution: Torch not compiled with CUDA enabled

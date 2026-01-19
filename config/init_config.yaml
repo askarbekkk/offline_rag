@@ -1,0 +1,53 @@
+logging:
+  level: "INFO"
+  show_progress: true
+  hide_http_requests: true
+  file_logging: true
+  console_logging: true
+
+model:
+  # embedding_model_hf: "nomic-ai/nomic-embed-text-v1.5"
+  embedding_model_hf: "BAAI/bge-m3"
+  rerank_model: "BAAI/bge-reranker-v2-m3"
+  device_rerank: "cpu"
+  device: "cpu"  # Поменяли на CPU для стабильности на старте
+
+ingestion : 
+  ignore_columns: None
+
+processing:
+  TOC_text: "Table of Contents"
+  headers_to_split_on: 
+    - ["##", "Header 2"]
+    - ["###", "Header 3"]
+    - ["####", "Header 4"]
+  headers_keys: {"Header 1":"# ", "Header 2":"## ", "Header 3":"### ", "Header 4":"#### "}
+  OMP_NUM_THREADS: 8 # Оптимально для большинства домашних ПК
+  chunk_size: 1500   # Чуть уменьшим для более точного поиска
+  chunk_overlap: 150
+  batch_size_embeddings: 32
+  batch_size_reranking: 8
+  split_documents: true
+
+paths:
+  cache_dir: "./cache"
+  data_dir: "./data"
+  log_dir: "./logs"
+
+files:
+  document_paths:
+    - "D:/Secure-Offline-RAG-System/data/raw/data.txt" # Укажи здесь имя своего файла
+    - "D:/Secure-Offline-RAG-System/data/raw/jobless.pdf" # Просто добавь эту строку
+
+  # Обязательные файлы для работы кода:
+  train_data: "D:/Secure-Offline-RAG-System/data/raw/train.csv"
+  test_data: "D:/Secure-Offline-RAG-System/data/raw/test.csv"
+  train_results: "D:/Secure-Offline-RAG-System/data/raw/train_results.csv"
+  test_results: "D:/Secure-Offline-RAG-System/data/raw/test_results.csv"
+
+
+
+
+ollama:
+  model_name: "llama3.1:8b"
+  base_url: "http://localhost:11434"

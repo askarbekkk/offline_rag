@@ -1,0 +1,9 @@
+2026-01-15 12:57:15,238 - root - INFO - Initializing components...
+2026-01-15 12:57:17,195 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: nomic-ai/nomic-embed-text-v1.5
+2026-01-15 12:57:23,533 - transformers_modules.nomic-ai.nomic-bert-2048.7710840340a098cfb869c4f65e87cf2b1b70caca.modeling_hf_nomic_bert - WARNING - <All keys matched successfully>
+2026-01-15 12:57:26,967 - src.models.reranker - INFO - Initialized reranker model: BAAI/bge-reranker-v2-m3
+2026-01-15 12:57:26,989 - root - INFO - Loading and preprocessing data...
+2026-01-15 12:57:26,990 - src.data.data_ingestion - INFO - Loading CSV data...
+2026-01-15 12:57:27,007 - src.data.data_ingestion - ERROR - Error loading CSV files: [Errno 2] No such file or directory: 'D:/Secure-Offline-RAG-System/data/train.csv'
+2026-01-15 12:57:27,011 - root - ERROR - Error in RAG initialization: [Errno 2] No such file or directory: 'D:/Secure-Offline-RAG-System/data/train.csv'
+2026-01-15 12:57:27,011 - root - ERROR - Error in main execution: [Errno 2] No such file or directory: 'D:/Secure-Offline-RAG-System/data/train.csv'
