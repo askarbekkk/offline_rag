@@ -7,8 +7,10 @@ logging:
 
 model:
   # embedding_model_hf: "nomic-ai/nomic-embed-text-v1.5"
-  embedding_model_hf: "BAAI/bge-m3"
-  rerank_model: "BAAI/bge-reranker-v2-m3"
+  # embedding_model_hf: "BAAI/bge-m3"  # слишком тяжёлая для 8 ГБ RAM без GPU
+  embedding_model_hf: "intfloat/multilingual-e5-small"
+  # rerank_model: "BAAI/bge-reranker-v2-m3"  # слишком тяжёлая для 8 ГБ RAM без GPU
+  rerank_model: "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"
   device_rerank: "cpu"
   device: "cpu"  # Поменяли на CPU для стабильности на старте
 
@@ -49,5 +51,6 @@ files:
 
 
 ollama:
-  model_name: "llama3.1:8b"
+  # model_name: "llama3.1:8b"  # ~4.7 ГБ RAM только под веса, не влезает на 8 ГБ ноуте
+  model_name: "qwen2.5:1.5b-instruct"
   base_url: "http://localhost:11434"

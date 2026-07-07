@@ -57,11 +57,13 @@ class ResponseGenerator:
         # Initialize primary LLM instance
         # self.llm = Llamafile(base_url=self.config["retrieval"]["llamafile_server_base_url"], seed=2024)
         # Мы указываем базовый URL Ollama и имя модели (например, llama3)
-#         self.llm = OllamaLLM(
-#              base_url="http://localhost:11434", 
-#              model="llama3.1:8b"  
-# )
-        self.llm = OllamaLLM(model="llama3.1:8b", num_predict=512,  temperature=0.7)
+        self.llm = OllamaLLM(
+            base_url=config['ollama']['base_url'],
+            model=config['ollama']['model_name'],
+            num_predict=512,
+            num_ctx=2048,
+            temperature=0.7,
+        )
     def generate_answer(self, 
                        query: str,
                        relevant_chunks: List[Document],
