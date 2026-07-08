@@ -11,7 +11,8 @@ def process_query(query: str,
                  reranker,
                  response_generator,
                  process_config: Dict,
-                 send_nb_chunks_to_llm=1) -> Dict:
+                 send_nb_chunks_to_llm=1,
+                 status=None) -> Dict:
     """
     Process a single query through the complete RAG pipeline.
     
@@ -42,12 +43,16 @@ def process_query(query: str,
     try:
         # Expand query if configured
         if process_config['retrieval']['use_query_expansion']:
+            if status:
+                status.write("🧠 Expanding query...")
             expanded_query = response_generator.expand_query(query)
             logging.info(f"Expanded query: {expanded_query}")
         else:
             expanded_query = query
-            
+
         # Retrieve relevant documents using expanded or original query
+        if status:
+            status.write("🔍 Searching for relevant documents...")
         if process_config['retrieval']['use_bm25']:
             retrieved_results = retriever.retrieve_with_method(
                 expanded_query,
@@ -61,9 +66,13 @@ def process_query(query: str,
                 top_k=process_config['retrieval']['top_k']
             )
         logging.info(f"Retrieved {len(retrieved_results)} documents")
-        
+        if status:
+            status.write(f"Found {len(retrieved_results)} documents")
+
         # Apply reranking if configured
         if process_config['retrieval']['use_reranking']:
+            if status:
+                status.write("📊 Reranking results...")
             reranked_results = reranker.rerank(
                 query,
                 [r.document for r in retrieved_results],
@@ -76,14 +85,16 @@ def process_query(query: str,
             relevant_docs = [r.document for r in retrieved_results]
             best_score = retrieved_results[0].score if retrieved_results else 0.0
             logging.info(f"Using retrieval scores. Best score: {best_score}")
-        
+
         # Generate final response using selected documents
+        if status:
+            status.write("✍️ Generating answer...")
         response_data = response_generator.generate_answer(
             query,
             relevant_docs,
             metadata={'retrieval_score': best_score}
         )
-        
+
         return {
             'Query': query,
             'Response': response_data['response'][:-4],
@@ -185,29 +196,31 @@ def main():
         st.session_state.messages.append({"role": "user", "content": prompt})
         
         # Process query and display response
-        with st.spinner("Processing your question..."):
+        with st.status("Processing your question...", expanded=True) as status:
             result = process_query(
                 prompt,
                 st.session_state.rag_components.retriever,
                 st.session_state.rag_components.reranker,
                 st.session_state.rag_components.response_generator,
                 st.session_state.rag_components.process_config,
-                st.session_state.rag_components.process_config['retrieval']['send_nb_chunks_to_llm']
+                st.session_state.rag_components.process_config['retrieval']['send_nb_chunks_to_llm'],
+                status=status
             )
-            
-            display_chat_message(
-                role="assistant",
-                content=result['Response'],
-                sources=result['Sources'],
-                score=result['Score']
-            )
-            
-            st.session_state.messages.append({
-                "role": "assistant",
-                "content": result['Response'],
-                "sources": result['Sources'],
-                "score": result['Score']
-            })
+            status.update(label="Done", state="complete", expanded=False)
+
+        display_chat_message(
+            role="assistant",
+            content=result['Response'],
+            sources=result['Sources'],
+            score=result['Score']
+        )
+
+        st.session_state.messages.append({
+            "role": "assistant",
+            "content": result['Response'],
+            "sources": result['Sources'],
+            "score": result['Score']
+        })
 
     # Sidebar with system information
     with st.sidebar:
