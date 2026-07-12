@@ -1,5 +1,6 @@
 # from langchain.prompts import ChatPromptTemplate
 from langchain_core.prompts import ChatPromptTemplate
+
 # from langchain_community.llms import Llamafile
 # from langchain_community.llms import Ollama
 from langchain_ollama import OllamaLLM
@@ -10,15 +11,16 @@ import logging
 from queue import Queue
 import threading
 
+
 class ResponseGenerator:
     """
     Advanced response generation system using LLM with context-aware capabilities.
-    
+
     This class handles the generation of responses to user queries based on retrieved
     documents, incorporating context preparation, query expansion, and structured
     response formatting. It ensures thread-safe LLM usage and comprehensive error
     handling.
-    
+
     Features:
         - Context-aware response generation
         - Query expansion for improved retrieval
@@ -26,7 +28,7 @@ class ResponseGenerator:
         - Thread-safe LLM handling
         - Structured response formatting
         - Comprehensive error handling
-    
+
     Attributes:
         config (Dict): Configuration settings
         llm_queue (Queue): Thread-safe queue for LLM instances
@@ -34,14 +36,14 @@ class ResponseGenerator:
         llm (Llamafile): LLM instance
         logger (logging.Logger): Logger for tracking operations
     """
-    
+
     def __init__(self, config: Dict):
         """
         Initialize the ResponseGenerator with configuration.
-        
+
         Args:
             config (Dict): Configuration dictionary containing:
-                
+
         Note:
             - Sets up thread-safe LLM handling
             - Initializes logging
@@ -49,157 +51,197 @@ class ResponseGenerator:
         """
         self.config = config
         self.logger = logging.getLogger(__name__)
-        
+
         # Thread-safe LLM management
         self.llm_queue = Queue()
         self.llm_lock = threading.Lock()
-        
+
         # Initialize primary LLM instance
         # self.llm = Llamafile(base_url=self.config["retrieval"]["llamafile_server_base_url"], seed=2024)
         # Мы указываем базовый URL Ollama и имя модели (например, llama3)
         self.llm = OllamaLLM(
-            base_url=config['ollama']['base_url'],
-            model=config['ollama']['model_name'],
+            base_url=config["ollama"]["base_url"],
+            model=config["ollama"]["model_name"],
             num_predict=512,
             num_ctx=2048,
-            temperature=0.7,
+            temperature=0.1,
+            top_p=0.9,
+            repeat_penalty=1.1,
         )
-    def generate_answer(self, 
-                       query: str,
-                       relevant_chunks: List[Document],
-                       metadata: Optional[Dict] = None) -> Dict:
+
+    def generate_answer(
+        self,
+        query: str,
+        relevant_chunks: List[Document],
+        metadata: Optional[Dict] = None,
+        chat_history: Optional[List[Dict]] = None,
+    ) -> Dict:
         """
         Generate a comprehensive answer based on retrieved document chunks.
-        
+
         Processes retrieved documents and generates a contextualized response
         to the user's query, including source information and metadata.
-        
+
         Args:
             query (str): User's question or query
             relevant_chunks (List[Document]): Retrieved relevant document chunks
             metadata (Optional[Dict]): Additional context or request metadata
-            
+            chat_history (Optional[List[Dict]]): Previous conversation messages
+                Each dict should have 'role' ('user'/'assistant') and 'content'
+
         Returns:
             Dict: Response dictionary containing:
                 - response: Generated answer text
                 - source_documents: List of source metadata
                 - metadata: Additional response metadata
                 - error: Error information if generation fails
-                
+
         Note:
             - Handles errors gracefully with informative messages
             - Preserves source attribution
             - Includes metadata in response
+            - Incorporates chat history for context-aware responses
         """
         try:
             context = self._prepare_context(relevant_chunks)
-            response = self._generate_response(query, context)
-            
+            response = self._generate_response(query, context, chat_history)
+
             return {
-                'response': response,
-                'source_documents': [doc.metadata for doc in relevant_chunks],
-                'metadata': metadata or {}
+                "response": response,
+                "source_documents": [doc.metadata for doc in relevant_chunks],
+                "metadata": metadata or {},
             }
-            
+
         except Exception as e:
             self.logger.error(f"Error generating response: {str(e)}")
             return {
-                'response': "I apologize, but I encountered an error generating a response. Please try again.",
-                'error': str(e),
-                'metadata': metadata or {}
+                "response": "I apologize, but I encountered an error generating a response. Please try again.",
+                "error": str(e),
+                "metadata": metadata or {},
             }
 
     def _prepare_context(self, chunks: List[Document]) -> str:
         """
         Prepare structured context from retrieved document chunks.
-        
+
         Formats retrieved chunks with source information and enumeration
         for clear reference in generated responses.
-        
+
         Args:
             chunks (List[Document]): Retrieved document chunks to process
-            
+
         Returns:
             str: Formatted context string with source information
-            
+
         Note:
             - Enumerates chunks for reference
             - Includes source metadata
             - Formats for clarity and readability
         """
         context_parts = []
-        
+
         for i, chunk in enumerate(chunks, 1):
             source_info = f"Source: {chunk.metadata.get('source', 'Unknown')}"
             context_parts.append(f"[{i}] {source_info}\n{chunk.page_content}")
-        
+
         return "\n\n".join(context_parts)
 
-    def _generate_response(self, query: str, context: str) -> str:
+    def _generate_response(
+        self, query: str, context: str, chat_history: Optional[List[Dict]] = None
+    ) -> str:
         """
         Generate formatted response using LLM based on query and context.
-        
+
         Uses a carefully crafted prompt to generate clear, accurate, and
         well-structured responses that address the query while maintaining
         appropriate context and source attribution.
-        
+
         Args:
             query (str): User's question
             context (str): Prepared context from relevant documents
-            
+            chat_history (Optional[List[Dict]]): Previous conversation messages
+
         Returns:
             str: Generated response text
-            
+
         Note:
             - Uses structured prompt template
             - Emphasizes clarity and accuracy
             - Includes source attribution guidance
             - Maintains consistent response format
+            - Incorporates chat history for multi-turn conversations
         """
 
-        prompt = ChatPromptTemplate.from_template("""
-        You are an efficient Q&A assistant that respond to user queries based on provided context.
-        Based on the following information, please provide a clear, accurate, and comprehensive answer to the question.
-        If the information is not sufficient to answer the question completely, acknowledge this and provide what you can.
+        # Format chat history if provided
+        chat_history_text = ""
+        if chat_history and len(chat_history) > 0:
+            chat_history_text = "Previous conversation:\n"
+            for msg in chat_history:
+                role = "User" if msg["role"] == "user" else "Assistant"
+                content = msg["content"]
+                # Truncate very long messages in history to keep context manageable
+                if len(content) > 1000:
+                    content = content[:1000] + "..."
+                chat_history_text += f"{role}: {content}\n"
+            chat_history_text += "\nCurrent conversation:\n"
 
+        # Determine if we have retrieved context or not
+        has_context = context is not None and context.strip() != ""
+
+        if has_context:
+            # Strict grounding prompt when we have retrieved documents
+            prompt = ChatPromptTemplate.from_template("""
+        You are a strictly grounded assistant. You MUST follow these rules:
+        
+        1. Answer ONLY based on the provided "Relevant Information" section below.
+        2. If the answer is NOT fully contained in the provided context, respond: "The provided documents do not contain enough information to answer this question."
+        3. Do NOT use any external knowledge or prior training.
+        4. Do NOT make up, infer, or speculate beyond the provided text.
+        5. If the question refers to previous conversation context, first check the provided documents. If the answer is not in the documents, use the conversation history.
+        6. Respond in the same language as the question.
+        7. Keep your answer concise and directly address the question.
+        
+        {chat_history}
         Question: {query}
-
+        
         Relevant Information:
         {context}
-
-        Please provide a response that:
-        1. Directly addresses the question
-        2. Is supported by the provided information
-        3. Is clear and well-organized
-        5. Is short as possible with relevant informations
-        6. Don't mention the source of the information
-        7. Do not repeat the question 
-        8. Clearly state the lack of information in the provided context to answer the question if it's the case.
-        9. Respond only in the language of the query.
+        
         Response:
         """)
-       
-        messages = prompt.format_messages(query=query, context=context)
-        response = self.llm.invoke(messages)
+        else:
+            # General conversation prompt when no retrieval was needed
+            prompt = ChatPromptTemplate.from_template("""
+        You are a helpful assistant. Answer the user's question based on the conversation history.
+        Be concise, friendly, and helpful. Respond in the same language as the question.
         
-        return response
+        {chat_history}
+        Question: {query}
         
+        Response:
+        """)
 
-    
+        messages = prompt.format_messages(
+            query=query, context=context, chat_history=chat_history_text
+        )
+        response = self.llm.invoke(messages)
+
+        return response
+
     def expand_query(self, query: str) -> str:
         """
         Expand the original query for improved document retrieval.
-        
+
         Uses LLM to generate an expanded version of the query that includes
         related terms, synonyms, and alternative phrasings while maintaining
         the original intent.
-        
+
         Args:
             query (str): Original user query
-            
+
         Returns:
             str: Expanded query text
-            
+
         Note:
             - Includes relevant synonyms
             - Adds technical terms
@@ -229,8 +271,8 @@ class ResponseGenerator:
         Original query: {query}
         Expanded query:
         """)
-                
+
         messages = prompt.format_messages(query=query)
         response = self.llm.invoke(messages)
-        
+
         return response

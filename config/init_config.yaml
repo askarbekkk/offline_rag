@@ -6,27 +6,24 @@ logging:
   console_logging: true
 
 model:
-  # embedding_model_hf: "nomic-ai/nomic-embed-text-v1.5"
-  # embedding_model_hf: "BAAI/bge-m3"  # слишком тяжёлая для 8 ГБ RAM без GPU
   embedding_model_hf: "intfloat/multilingual-e5-small"
-  # rerank_model: "BAAI/bge-reranker-v2-m3"  # слишком тяжёлая для 8 ГБ RAM без GPU
   rerank_model: "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"
   device_rerank: "cpu"
-  device: "cpu"  # Поменяли на CPU для стабильности на старте
+  device: "cpu"
 
-ingestion : 
+ingestion:
   ignore_columns: None
 
 processing:
   TOC_text: "Table of Contents"
-  headers_to_split_on: 
+  headers_to_split_on:
     - ["##", "Header 2"]
     - ["###", "Header 3"]
     - ["####", "Header 4"]
   headers_keys: {"Header 1":"# ", "Header 2":"## ", "Header 3":"### ", "Header 4":"#### "}
-  OMP_NUM_THREADS: 8 # Оптимально для большинства домашних ПК
-  chunk_size: 1500   # Чуть уменьшим для более точного поиска
-  chunk_overlap: 150
+  OMP_NUM_THREADS: 8
+  chunk_size: 400
+  chunk_overlap: 75
   batch_size_embeddings: 32
   batch_size_reranking: 8
   split_documents: true
@@ -38,19 +35,21 @@ paths:
 
 files:
   document_paths:
-    - "D:/Secure-Offline-RAG-System/data/raw/data.txt" # Укажи здесь имя своего файла
-    - "D:/Secure-Offline-RAG-System/data/raw/jobless.pdf" # Просто добавь эту строку
+    - "D:/Secure-Offline-RAG-System/data/raw/data.txt"
+    - "D:/Secure-Offline-RAG-System/data/raw/jobless.pdf"
 
-  # Обязательные файлы для работы кода:
   train_data: "D:/Secure-Offline-RAG-System/data/raw/train.csv"
   test_data: "D:/Secure-Offline-RAG-System/data/raw/test.csv"
   train_results: "D:/Secure-Offline-RAG-System/data/raw/train_results.csv"
   test_results: "D:/Secure-Offline-RAG-System/data/raw/test_results.csv"
 
-
-
-
 ollama:
-  # model_name: "llama3.1:8b"  # ~4.7 ГБ RAM только под веса, не влезает на 8 ГБ ноуте
   model_name: "qwen2.5:1.5b-instruct"
   base_url: "http://localhost:11434"
+
+vector_store:
+  type: "chroma"
+  persist_directory: "./cache/chroma_db"
+  collection_name: "rag_documents_light"
+  top_k: 15
+  similarity_threshold: 0.3
