@@ -25,6 +25,19 @@ The system follows a modular RAG pipeline designed for scalability and transpare
 4. **Reranking Stage**: The Top-K results are re-evaluated by a Cross-Encoder to filter out noise and improve relevance.
 5. **Generation**: Llama 3.1 generates a comprehensive response based strictly on the retrieved context.
 
+## 🎬 Demo
+
+![Architecture](docs/architecture.png)
+
+Runs fully offline on a laptop CPU (light profile: e5-small embeddings, mMiniLM reranker, EXAONE 3.5 2.4B via Ollama).
+The bundled demo corpus `data/raw/data.txt` is 8 public Wikipedia articles on solar, wind, energy storage and Korean renewable-energy policy, in English and Korean (CC BY-SA 4.0).
+
+| English question | Korean question |
+|---|---|
+| ![](docs/demo_en.png) | ![](docs/demo_ko.png) |
+
+The Korean question is answered in Korean from both English and Korean passages (cross-lingual retrieval).
+
 ## 🚀 Key Features
 - **Total Privacy**: 100% offline deployment, no external API calls.
 - **Multilingual Support**: Optimized for Korean and English technical content.

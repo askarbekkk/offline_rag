@@ -437,8 +437,9 @@ class FileLoader(BaseLoader):
                 # Handle custom loaders (PDF) and code file loaders
                 return loader_class(str(source_path))
             else:
-                # Handle standard loaders
-                loader = loader_class(str(source_path))
+                # Handle standard loaders; text files are UTF-8 (Windows would default to cp1251 and break on Korean)
+                kwargs = {"encoding": "utf-8"} if loader_class is TextLoader else {}
+                loader = loader_class(str(source_path), **kwargs)
                 return loader.load()
                 
         except Exception as e:
